@@ -3,10 +3,10 @@ package api
 import (
 	"github.com/DowneyL/the-way-to-gin/models"
 	"github.com/DowneyL/the-way-to-gin/pkg/e"
+	"github.com/DowneyL/the-way-to-gin/pkg/logging"
 	"github.com/DowneyL/the-way-to-gin/pkg/util"
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 )
 
@@ -27,7 +27,7 @@ func GetAuth(c *gin.Context) {
 	code := e.INVALID_PARAMS
 	if !ok {
 		for _, err := range valid.Errors {
-			log.Println(err.Key, err.Message)
+			logging.Info(err.Key, err.Message)
 		}
 	} else {
 		isExist := models.CheckAuth(username, password)

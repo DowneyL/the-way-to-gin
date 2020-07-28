@@ -42,9 +42,9 @@ func ExistTagByName(name string) bool {
 }
 
 func AddTag(name string, state int, createdBy string) bool {
-	wdb.Create(&Tag {
-		Name: name,
-		State: state,
+	wdb.Create(&Tag{
+		Name:      name,
+		State:     state,
 		CreatedBy: createdBy,
 	})
 

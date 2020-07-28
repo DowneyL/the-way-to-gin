@@ -60,7 +60,7 @@ func AddTag(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
-		"msg": e.GetMsg(code),
+		"msg":  e.GetMsg(code),
 		"data": make(map[string]interface{}),
 	})
 }
@@ -84,7 +84,7 @@ func EditTag(c *gin.Context) {
 	valid.MaxSize(name, 100, "name").Message("名称最长为100字符")
 
 	code := e.INVALID_PARAMS
-	if ! valid.HasErrors() {
+	if !valid.HasErrors() {
 		code = e.SUCCESS
 		if models.ExistTagById(id) {
 			data := make(map[string]interface{})
@@ -103,9 +103,9 @@ func EditTag(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"code" : code,
-		"msg" : e.GetMsg(code),
-		"data" : make(map[string]string),
+		"code": code,
+		"msg":  e.GetMsg(code),
+		"data": make(map[string]string),
 	})
 }
 
@@ -124,7 +124,7 @@ func DeleteTag(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": code,
-		"msg": e.GetMsg(code),
+		"msg":  e.GetMsg(code),
 		"data": make(map[string]interface{}),
 	})
 }

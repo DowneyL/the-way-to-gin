@@ -46,7 +46,7 @@ func loadApp() {
 	}
 
 	PageSize = section.Key("PAGE_SIZE").MustInt(10)
-	JwtSecret = section.Key("APP_SECRET").MustString("!@)*#)!@U#@*!@!)")
+	JwtSecret = section.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
 }
 
 func loadServer() {

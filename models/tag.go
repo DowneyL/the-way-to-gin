@@ -59,7 +59,7 @@ func ExistTagById(id int) bool {
 }
 
 func EditTag(id int, data interface{}) bool {
-	wdb.Model(&Tag{}).Where("id = ?", id).Updates(data)
+	wdb.Model(Tag{}).Where("id = ?", id).Updates(data)
 
 	return true
 }

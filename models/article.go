@@ -1,10 +1,5 @@
 package models
 
-import (
-	"github.com/jinzhu/gorm"
-	"time"
-)
-
 type Article struct {
 	Model
 	TagID      int    `json:"tag_id" gorm:"index"`
@@ -15,14 +10,6 @@ type Article struct {
 	CreatedBy  string `json:"created_by"`
 	ModifiedBy string `json:"modified_by"`
 	State      int    `json:"state"`
-}
-
-func (article *Article) BeforeCreate(scope *gorm.Scope) error {
-	return scope.SetColumn("CreatedOn", time.Now().Unix())
-}
-
-func (article *Article) BeforeUpdate(scope *gorm.Scope) error {
-	return scope.SetColumn("UpdateOn", time.Now().Unix())
 }
 
 func GetArticles(page int, pageSize int, maps interface{}) (articles []Article) {

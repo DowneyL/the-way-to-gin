@@ -31,7 +31,7 @@ func main() {
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
-	<- quit
+	<-quit
 
 	logging.Info("Shutdown Server ...")
 

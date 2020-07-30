@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
+	"time"
 )
 
 var (
@@ -18,6 +19,7 @@ type Model struct {
 	ID         int `gorm:"primary_key" json:"id"`
 	CreatedOn  int `json:"created_on"`
 	ModifiedOn int `json:"modified_on"`
+	DeletedOn  int `json:"deleted_on"`
 }
 
 func init() {
@@ -56,6 +58,9 @@ func init() {
 	db.LogMode(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
+	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
+	db.Callback().Update().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
+	db.Callback().Delete().Replace("gorm:delete", deleteCallback)
 
 	// write db
 	wdb = db
@@ -67,4 +72,63 @@ func CloseDB() {
 
 func CloseWriteDB() {
 	defer wdb.Close()
+}
+
+func updateTimeStampForCreateCallback(scope *gorm.Scope) {
+	if !scope.HasError() {
+		nowTime := time.Now().Unix()
+		if createTimeField, ok := scope.FieldByName("CreatedOn"); ok {
+			if createTimeField.IsBlank {
+				_ = createTimeField.Set(nowTime)
+			}
+		}
+
+		if modifiedTimeField, ok := scope.FieldByName("ModifiedOn"); ok {
+			if modifiedTimeField.IsBlank {
+				_ = modifiedTimeField.Set(nowTime)
+			}
+		}
+	}
+}
+
+func updateTimeStampForUpdateCallback(scope *gorm.Scope) {
+	if _, ok := scope.Get("gorm:update_column"); !ok {
+		_ = scope.SetColumn("ModifiedOn", time.Now().Unix())
+	}
+}
+
+func deleteCallback(scope *gorm.Scope) {
+	if scope.HasError() {
+		return
+	}
+	var extraOption string
+	if str, ok := scope.Get("gorm:delete_option"); ok {
+		extraOption = fmt.Sprint(str)
+	}
+
+	deleteOnField, hasDeletedOnField := scope.FieldByName("DeletedOn")
+	if !scope.Search.Unscoped && hasDeletedOnField {
+		scope.Raw(fmt.Sprintf(
+			"UPDATE %v SET %v=%v%v%v",
+			scope.QuotedTableName(),
+			scope.Quote(deleteOnField.DBName),
+			scope.AddToVars(time.Now().Unix()),
+			addExtraSpaceIfExist(scope.CombinedConditionSql()),
+			addExtraSpaceIfExist(extraOption),
+			)).Exec()
+	} else {
+		scope.Raw(fmt.Sprintf(
+			"DELETE FROM %v%v%v",
+			scope.QuotedTableName(),
+			addExtraSpaceIfExist(scope.CombinedConditionSql()),
+			addExtraSpaceIfExist(extraOption),
+		)).Exec()
+	}
+}
+
+func addExtraSpaceIfExist(str string) string {
+	if str != "" {
+		return " " + str
+	}
+	return ""
 }

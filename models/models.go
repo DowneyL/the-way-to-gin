@@ -3,7 +3,6 @@ package models
 import (
 	"fmt"
 	"github.com/DowneyL/the-way-to-gin/pkg/setting"
-	"github.com/go-ini/ini"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
@@ -11,8 +10,7 @@ import (
 )
 
 var (
-	db  *gorm.DB
-	wdb *gorm.DB
+	db *gorm.DB
 )
 
 type Model struct {
@@ -22,36 +20,16 @@ type Model struct {
 	DeletedOn  int `json:"deleted_on"`
 }
 
-func init() {
-	var (
-		err                                               error
-		section                                           *ini.Section
-		dbType, dbName, user, password, host, tablePrefix string
-	)
-	section, err = setting.Cfg.GetSection("database")
-	if err != nil {
-		log.Fatalf("Fail to get section 'database':%v", err)
-	}
-	dbType = section.Key("TYPE").MustString("mysql")
-	dbName = section.Key("NAME").MustString("")
-	user = section.Key("USER").MustString("root")
-	password = section.Key("PASSWORD").MustString("")
-	host = section.Key("HOST").MustString("127.0.0.1")
-	tablePrefix = section.Key("TABLE_PREFIX").MustString("")
-
-	info := fmt.Sprintf(
-		"%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		user,
-		password,
-		host,
-		dbName)
-	db, err = gorm.Open(dbType, info)
+func Setup() {
+	var err error
+	info := connectInfo()
+	db, err = gorm.Open(setting.DatabaseSetting.Type, info)
 	if err != nil {
 		log.Println(err)
 	}
 
 	gorm.DefaultTableNameHandler = func(db *gorm.DB, defaultTableName string) string {
-		return tablePrefix + defaultTableName
+		return setting.DatabaseSetting.TablePrefix + defaultTableName
 	}
 
 	db.SingularTable(true)
@@ -61,17 +39,19 @@ func init() {
 	db.Callback().Create().Replace("gorm:update_time_stamp", updateTimeStampForCreateCallback)
 	db.Callback().Update().Replace("gorm:update_time_stamp", updateTimeStampForUpdateCallback)
 	db.Callback().Delete().Replace("gorm:delete", deleteCallback)
+}
 
-	// write db
-	wdb = db
+func connectInfo() string {
+	return fmt.Sprintf(
+		"%s:%s@tcp(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		setting.DatabaseSetting.User,
+		setting.DatabaseSetting.Password,
+		setting.DatabaseSetting.Host,
+		setting.DatabaseSetting.Name)
 }
 
 func CloseDB() {
 	defer db.Close()
-}
-
-func CloseWriteDB() {
-	defer wdb.Close()
 }
 
 func updateTimeStampForCreateCallback(scope *gorm.Scope) {
@@ -115,7 +95,7 @@ func deleteCallback(scope *gorm.Scope) {
 			scope.AddToVars(time.Now().Unix()),
 			addExtraSpaceIfExist(scope.CombinedConditionSql()),
 			addExtraSpaceIfExist(extraOption),
-			)).Exec()
+		)).Exec()
 	} else {
 		scope.Raw(fmt.Sprintf(
 			"DELETE FROM %v%v%v",

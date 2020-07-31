@@ -29,7 +29,7 @@ func ExistTagByName(name string) bool {
 }
 
 func AddTag(name string, state int, createdBy string) bool {
-	wdb.Create(&Tag{
+	db.Create(&Tag{
 		Name:      name,
 		State:     state,
 		CreatedBy: createdBy,
@@ -46,20 +46,19 @@ func ExistTagById(id int) bool {
 }
 
 func EditTag(id int, data interface{}) bool {
-	wdb.Model(Tag{}).Where("id = ?", id).Updates(data)
+	db.Model(Tag{}).Where("id = ?", id).Updates(data)
 
 	return true
 }
 
 func DeleteTag(id int) bool {
-	wdb.Where("id = ?", id).Delete(&Tag{})
+	db.Where("id = ?", id).Delete(&Tag{})
 
 	return true
 }
 
 func CleanTag() bool {
-	wdb.Unscoped().Where("deleted_on != ?", 0).Delete(&Tag{})
+	db.Unscoped().Where("deleted_on != ?", 0).Delete(&Tag{})
 
 	return true
 }
-

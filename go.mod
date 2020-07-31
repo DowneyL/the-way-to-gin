@@ -9,7 +9,7 @@ require (
 	github.com/go-ini/ini v1.57.0
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
 	github.com/jinzhu/gorm v1.9.15
-	github.com/robfig/cron v1.2.0 // indirect
+	github.com/robfig/cron v1.2.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/unknwon/com v1.0.1
 	golang.org/x/sys v0.0.0-20200724161237-0e2f3a69832c // indirect

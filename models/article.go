@@ -36,12 +36,12 @@ func ExistArticleById(id int) bool {
 }
 
 func EditArticle(id int, data interface{}) bool {
-	wdb.Model(Article{}).Where("id = ?", id).Updates(data)
+	db.Model(Article{}).Where("id = ?", id).Updates(data)
 	return true
 }
 
 func AddArticle(data map[string]interface{}) bool {
-	wdb.Create(&Article{
+	db.Create(&Article{
 		TagID:     data["tag_id"].(int),
 		Title:     data["title"].(string),
 		Desc:      data["desc"].(string),
@@ -53,12 +53,12 @@ func AddArticle(data map[string]interface{}) bool {
 }
 
 func DeleteArticle(id int) bool {
-	wdb.Where("id = ?", id).Delete(Article{})
+	db.Where("id = ?", id).Delete(Article{})
 	return true
 }
 
 func CleanArticle() bool {
-	wdb.Unscoped().Where("deleted_on != ?", 0).Delete(&Article{})
+	db.Unscoped().Where("deleted_on != ?", 0).Delete(&Article{})
 
 	return true
 }

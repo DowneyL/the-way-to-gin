@@ -2,12 +2,17 @@ package main
 
 import (
 	"github.com/DowneyL/the-way-to-gin/models"
+	"github.com/DowneyL/the-way-to-gin/pkg/logging"
+	"github.com/DowneyL/the-way-to-gin/pkg/setting"
 	"github.com/robfig/cron"
 	"log"
 	"time"
 )
 
 func main() {
+	setting.Setup()
+	models.Setup()
+	logging.Setup()
 	log.Println("Starting")
 
 	c := cron.New()

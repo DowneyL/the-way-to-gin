@@ -2,28 +2,22 @@ package logging
 
 import (
 	"fmt"
+	"github.com/DowneyL/the-way-to-gin/pkg/setting"
 	"log"
 	"os"
 	"time"
 )
 
-var (
-	LogSavePath = "runtime/logs/"
-	LogSaveName = "log_"
-	LogFileExt  = "log"
-	TimeFormat  = "20060102"
-)
-
 func getLogFilePath() string {
-	return LogSavePath
+	return setting.AppSetting.RuntimeRootPath + setting.AppSetting.LogSavePath
 }
 
 func getLogFileFullPath() string {
 	return fmt.Sprintf("%s%s%s.%s",
 		getLogFilePath(),
-		LogSaveName,
-		time.Now().Format(TimeFormat),
-		LogFileExt)
+		setting.AppSetting.LogSaveName,
+		time.Now().Format(setting.AppSetting.TimeFormat),
+		setting.AppSetting.LogFileExtend)
 }
 
 func openLogFile(filepath string) *os.File {

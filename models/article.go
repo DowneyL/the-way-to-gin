@@ -56,3 +56,9 @@ func DeleteArticle(id int) bool {
 	wdb.Where("id = ?", id).Delete(Article{})
 	return true
 }
+
+func CleanArticle() bool {
+	wdb.Unscoped().Where("deleted_on != ?", 0).Delete(&Article{})
+
+	return true
+}

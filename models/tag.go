@@ -56,3 +56,10 @@ func DeleteTag(id int) bool {
 
 	return true
 }
+
+func CleanTag() bool {
+	wdb.Unscoped().Where("deleted_on != ?", 0).Delete(&Tag{})
+
+	return true
+}
+

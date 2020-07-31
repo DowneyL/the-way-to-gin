@@ -3,21 +3,23 @@ package routers
 import (
 	"github.com/DowneyL/the-way-to-gin/middleware/jwt"
 	"github.com/DowneyL/the-way-to-gin/pkg/setting"
+	"github.com/DowneyL/the-way-to-gin/pkg/upload"
 	"github.com/DowneyL/the-way-to-gin/routers/api"
 	v1 "github.com/DowneyL/the-way-to-gin/routers/api/v1"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func InitRouter() *gin.Engine {
 	r := gin.New()
 
 	r.Use(gin.Logger())
-
 	r.Use(gin.Recovery())
-
 	gin.SetMode(setting.ServerSetting.RunMode)
 
+	r.StaticFS("/upload/images", http.Dir(upload.GetImageFullPath()))
 	r.POST("/api/auth", api.GetAuth)
+	r.POST("/api/upload", api.UploadImage)
 
 	apiV1 := r.Group("/api/v1")
 	apiV1.Use(jwt.JWT())

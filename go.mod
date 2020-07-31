@@ -26,5 +26,6 @@ replace (
 	github.com/DowneyL/the-way-to-gin/pkg/logging => ./pkg/logging
 	github.com/DowneyL/the-way-to-gin/pkg/setting => ./pkg/setting
 	github.com/DowneyL/the-way-to-gin/pkg/util => ./pkg/util
+	github.com/DowneyL/the-way-to-gin/pkg/file => ./pkg/file
 	github.com/DowneyL/the-way-to-gin/routers => ./routers
 )

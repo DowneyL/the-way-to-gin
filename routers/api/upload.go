@@ -32,7 +32,7 @@ func UploadImage(c *gin.Context) {
 		savePath := upload.GetImagePath()
 
 		src := fullPath + imageName
-		if ! upload.CheckImageExt(imageName) || ! upload.CheckImageSize(file) {
+		if !upload.CheckImageExt(imageName) || !upload.CheckImageSize(file) {
 			code = e.ERROR_UPLOAD_CHECK_IMAGE_FORMAT
 		} else {
 			err := upload.CheckImage(fullPath)

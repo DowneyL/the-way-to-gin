@@ -8,6 +8,7 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-ini/ini v1.57.0
 	github.com/go-playground/validator/v10 v10.3.0 // indirect
+	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/jinzhu/gorm v1.9.15
 	github.com/robfig/cron v1.2.0
 	github.com/smartystreets/goconvey v1.6.4 // indirect
@@ -23,9 +24,9 @@ replace (
 	github.com/DowneyL/the-way-to-gin/middleware => ./middleware
 	github.com/DowneyL/the-way-to-gin/models => ./models
 	github.com/DowneyL/the-way-to-gin/pkg/e => ./pkg/e
+	github.com/DowneyL/the-way-to-gin/pkg/file => ./pkg/file
 	github.com/DowneyL/the-way-to-gin/pkg/logging => ./pkg/logging
 	github.com/DowneyL/the-way-to-gin/pkg/setting => ./pkg/setting
 	github.com/DowneyL/the-way-to-gin/pkg/util => ./pkg/util
-	github.com/DowneyL/the-way-to-gin/pkg/file => ./pkg/file
 	github.com/DowneyL/the-way-to-gin/routers => ./routers
 )
